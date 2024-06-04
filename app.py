@@ -3,15 +3,19 @@ import json
 import numbers
 import os, sys
 import random
+import eventlet
+# Ensure eventlet monkey patching
+eventlet.monkey_patch(select=True, socket=True)
 
 from dotenv import load_dotenv
 load_dotenv('./.env')
 
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask_socketio import SocketIO, send
-import eventlet
-# Ensure eventlet monkey patching
-eventlet.monkey_patch()
+
+RUNNING_FLASK = True
+RUNNING_GUNICORN = False
+DEPLOY_HEROKU = False
 
 p = os.path.abspath(os.getcwd())
 newp = os.path.join(p, "eliza_python_translation")
@@ -21,9 +25,6 @@ from eliza_python_translation.elizalogic import StringTracer, NullTracer, PreTra
 from eliza_python_translation.elizascript import ElizaScriptReader
 from eliza_python_translation.eliza import Eliza
 from eliza_python_translation.DOCTOR_1966_01_CACM import CACM_1966_01_DOCTOR_script as elizaDoctorScript
-
-RUNNING_FLASK = False
-
 
 def error(message, details):
     return {
@@ -47,10 +48,6 @@ trace = StringTracer()
 no_trace = NullTracer()
 pre_trace = PreTracer()
 eliza.set_tracer(no_trace)
-
-
-
-
 
 def message(id, source, message):
    return  {
@@ -93,22 +90,32 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-
     try:
         objp = json.loads(msg)
     except Exception as e:
         return
     if 'message' in objp:
-        send(json.dumps({'response': messageTemplateHTML(message(random.getrandbits(16), 'ELIZA', eliza.response(objp['message'])))}), broadcast=True)
+
+        m = objp['message'] or 'hello'
+        elizaResponse = eliza.response(m)
+        preMessages = [
+            messageTemplateHTML(message(random.getrandbits(16), 'USER', m.upper())),
+            messageTemplateHTML(message(random.getrandbits(16), 'ELIZA', elizaResponse))
+        ]
+        preparedResponse = ''.join(preMessages)
+        send(json.dumps({'response': preparedResponse}))
 
 
 def run_app():
+    # gunicorn entrance
+    return app
 
+
+def run_flask_app():
+    socketio.run(app, debug=True)
     return app
 
 
 if __name__ == '__main__':
+    pass
 
-    if RUNNING_FLASK:
-        app.run(host='0.0.0.0', port=5000)
-        socketio.run(app, debug=False)

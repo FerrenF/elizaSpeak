@@ -5,9 +5,11 @@
     <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let socket = io({transports: ['websocket']});
+            let socket = io({{ "{transports: ['websocket']}" if DEPLOY_HEROKU else "" }});
 
-            socket.on('connect', function() {});
+            socket.on('connect', function() {
+                socket.send(JSON.stringify({'status': 'connect'}))
+            });
 
             socket.on('message', function(msg) {
                 var data = JSON.parse(msg);
@@ -38,7 +40,7 @@
             {% endfor %}
         </div>
         <div class="input-group mt-3">
-            <form id="userMessageForm" action="#">
+            <form id="userMessageForm" onsubmit="event.preventDefault();">
             <input id="userMessage" type="text" class="form-control" autocomplete="off" placeholder="Type a message...">
             <div class="input-group-append">
                 <button id="sendBtn" class="btn btn-primary">Send</button>
