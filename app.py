@@ -82,7 +82,7 @@ def index():
         },
         'data':
             {
-                'messages': list(message(0, 'ELIZA', eliza.get_greeting()))
+                'messages': list(messageTemplateHTML(message(0, 'ELIZA', eliza.get_greeting())))
             }
     }
 
