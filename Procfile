@@ -1,1 +1,1 @@
-web: gunicorn wsgi:run_app() --timeout 10 --max-requests 1200 -w 4 --worker-class eventlet
+web: gunicorn "wsgi:run_app()" --timeout 10 --max-requests 1200 -w 4 --worker-class eventlet --port $PORT --bind 0.0.0.0
