@@ -29,6 +29,7 @@ app.config['FLASK_DEBUG'] = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 socketio = SocketIO(app,  async_mode='eventlet')
+socketio.run(app, debug=False)
 
 
 def error(message, details):
@@ -93,7 +94,6 @@ def handle_message(msg):
 
 
 if __name__ == '__main__':
-
     if RUNNING_FLASK:
         app.run(host='0.0.0.0', port=5000)
-    socketio.run(app, debug=False)
+
