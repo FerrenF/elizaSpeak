@@ -1,0 +1,3 @@
+[submodule "eliza_python_translation"]
+	path = eliza_python_translation
+	url = https://github.com/FerrenF/eliza_python_translation.git

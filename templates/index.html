@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <title>{{ meta.APP_NAME }}</title>
+    <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let socket = io();
+
+            socket.on('connect', function() {});
+
+            socket.on('message', function(msg) {
+                var data = JSON.parse(msg);
+                var messages = document.getElementById('messages');
+                var message = document.createElement('div');
+                message.innerHTML = data.response;
+                messages.appendChild(message);
+            });
+
+            document.getElementById('sendBtn').onclick = function() {
+                var userMessage = document.getElementById('userMessage').value;
+                socket.send(JSON.stringify({'message': userMessage}));
+                document.getElementById('userMessage').value = '';
+            };
+        });
+        document.getElementById("userMessageForm").addEventListener("click", (event)=>{
+            document.getElementById("userMessageForm").submit();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="heading-container">
+        <h2>Welcome to {{ meta.APP_NAME }}! ... Be nice.</h2>
+        </div>
+        <div id="messages" class="list-group">
+            {% for message in data.messages %}
+                {{ message|safe }}
+            {% endfor %}
+        </div>
+        <div class="input-group mt-3">
+            <form id="userMessageForm" action="#">
+            <input id="userMessage" type="text" class="form-control" autocomplete="off" placeholder="Type a message...">
+            <div class="input-group-append">
+                <button id="sendBtn" class="btn btn-primary">Send</button>
+            </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

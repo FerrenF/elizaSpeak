@@ -1,0 +1,30 @@
+/* static/css/styles.css */
+body {
+    padding-top: 50px;
+}
+.content {
+    margin: 0 auto;
+    max-width: 800px;
+}
+.message {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.timestamp {
+    color: grey;
+    font-size: 0.8em;
+}
+.source {
+    font-weight: bold;
+    margin-right: 5px;
+}
+.text {
+    display: inline;
+}
+.heading-container{
+    padding: 2em;
+}
+.input-group form{
+    display: flex;
+    width: 100%;
+}
