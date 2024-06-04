@@ -34,7 +34,7 @@
         </div>
         <div id="messages" class="list-group">
             {% for message in data.messages %}
-                {{ message|raw }}
+                {{ message|safe }}
             {% endfor %}
         </div>
         <div class="input-group mt-3">

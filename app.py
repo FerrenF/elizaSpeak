@@ -1,6 +1,8 @@
 import datetime
 import json
+import numbers
 import os, sys
+import random
 
 from dotenv import load_dotenv
 load_dotenv('./.env')
@@ -82,7 +84,7 @@ def index():
         },
         'data':
             {
-                'messages': list(messageTemplateHTML(message(0, 'ELIZA', eliza.get_greeting())))
+                'messages': [messageTemplateHTML(message(random.getrandbits(16), 'ELIZA', eliza.get_greeting()))]
             }
     }
 
@@ -97,7 +99,7 @@ def handle_message(msg):
     except Exception as e:
         return
     if 'message' in objp:
-        send(json.dumps({'response': messageTemplateHTML(message(100, 'ELIZA', eliza.response(objp['message'])))}), broadcast=True)
+        send(json.dumps({'response': messageTemplateHTML(message(random.getrandbits(16), 'ELIZA', eliza.response(objp['message'])))}), broadcast=True)
 
 
 def run_app():
