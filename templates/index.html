@@ -5,7 +5,7 @@
     <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let socket = io();
+            let socket = io({transports: ['websocket']});
 
             socket.on('connect', function() {});
 
@@ -23,9 +23,7 @@
                 document.getElementById('userMessage').value = '';
             };
         });
-        document.getElementById("userMessageForm").addEventListener("click", (event)=>{
-            document.getElementById("userMessageForm").submit();
-        })
+
     </script>
 {% endblock %}
 
