@@ -12,7 +12,7 @@ import eventlet
 eventlet.monkey_patch()
 
 p = os.path.abspath(os.getcwd())
-newp = p + "\\eliza_python_translation"
+newp = os.path.join(p, "eliza_python_translation")
 sys.path.insert(0, newp)
 
 from eliza_python_translation.elizalogic import StringTracer, NullTracer, PreTracer
