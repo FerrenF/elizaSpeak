@@ -22,15 +22,13 @@ from eliza_python_translation.DOCTOR_1966_01_CACM import CACM_1966_01_DOCTOR_scr
 
 RUNNING_FLASK = False
 
+
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SECRET_KEY'] = os.getenv('COM_SECRET')
 app.config['FLASK_DEBUG'] = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-
-socketio = SocketIO(app,  async_mode='eventlet')
-socketio.run(app, debug=False)
-
+socketio = SocketIO(app, async_mode='eventlet')
 
 def error(message, details):
     return {
@@ -93,7 +91,12 @@ def handle_message(msg):
         send(json.dumps({'response': messageTemplateHTML(message(100, 'ELIZA', eliza.response(objp['message'])))}), broadcast=True)
 
 
+def run_app():
+    return app
+
+
 if __name__ == '__main__':
+
     if RUNNING_FLASK:
         app.run(host='0.0.0.0', port=5000)
-
+        socketio.run(app, debug=False)
