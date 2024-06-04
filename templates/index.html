@@ -5,7 +5,7 @@
     <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let socket = io({{ "{transports: ['websocket']}" if DEPLOY_HEROKU else "" }});
+            let socket = io({{ meta.TRANSPORT_METHOD_CONFIG }});
 
             socket.on('connect', function() {
                 socket.send(JSON.stringify({'status': 'connect'}))

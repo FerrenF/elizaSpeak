@@ -77,7 +77,8 @@ def index():
 
     context = {
         'meta': {
-            'APP_NAME': "SpeakEliza"
+            'APP_NAME': "SpeakEliza",
+            'TRANSPORT_METHOD_CONFIG': "{transports: ['websocket']}" if DEPLOY_HEROKU else ""
         },
         'data':
             {
