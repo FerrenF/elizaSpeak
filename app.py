@@ -61,13 +61,10 @@ def messageTemplateHTML(message):
     return render_template('message.html', **{'message': message})
 
 
-
-
-
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SECRET_KEY'] = os.getenv('COM_SECRET')
-app.config['FLASK_DEBUG'] = True
+app.config['FLASK_DEBUG'] = False
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 socketio = SocketIO(app, async_mode='eventlet')
 

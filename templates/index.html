@@ -30,10 +30,10 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="heading-container">
+     <div class="content container mt-5">
+        <div class="heading-container text-center">
             <h2>Welcome to {{ meta.APP_NAME }}! Find my code here: <a href="https://github.com/FerrenF/elizaSpeak">Github</a></h2>
-        </div>
+          </div>
         <div id="messages" class="list-group">
             {% for message in data.messages %}
                 {{ message|safe }}
