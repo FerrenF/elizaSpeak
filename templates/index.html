@@ -5,7 +5,7 @@
     <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let socket = io({{ meta.TRANSPORT_METHOD_CONFIG }});
+            let socket = io({{ meta.TRANSPORT_METHOD_CONFIG|safe }});
 
             socket.on('connect', function() {
                 socket.send(JSON.stringify({'status': 'connect'}))
