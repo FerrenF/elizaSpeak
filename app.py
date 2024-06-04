@@ -101,7 +101,7 @@ def handle_message(msg):
 
 
 def run_app():
-    socketio.run(app, debug=False)
+
     return app
 
 
@@ -109,4 +109,4 @@ if __name__ == '__main__':
 
     if RUNNING_FLASK:
         app.run(host='0.0.0.0', port=5000)
-
+        socketio.run(app, debug=False)
