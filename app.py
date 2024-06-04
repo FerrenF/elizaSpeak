@@ -3,6 +3,8 @@ import json
 import os, sys
 
 from dotenv import load_dotenv
+load_dotenv('./.env')
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 import eventlet
@@ -18,8 +20,8 @@ from eliza_python_translation.elizascript import ElizaScriptReader
 from eliza_python_translation.eliza import Eliza
 from eliza_python_translation.DOCTOR_1966_01_CACM import CACM_1966_01_DOCTOR_script as elizaDoctorScript
 
+RUNNING_FLASK = False
 
-load_dotenv('./.env')
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SECRET_KEY'] = os.getenv('COM_SECRET')
@@ -62,12 +64,9 @@ no_trace = NullTracer()
 pre_trace = PreTracer()
 eliza.set_tracer(no_trace)
 
-@app.route('/')
-def index():  # put application's code here
 
-    messages = [
-        message(0,'ELIZA', eliza.get_greeting())
-                ]
+@app.route('/')
+def index():
 
     context = {
         'meta': {
@@ -75,7 +74,7 @@ def index():  # put application's code here
         },
         'data':
             {
-                'messages': list(map(lambda msg: render_template('message.html', **{'message': msg}), messages))
+                'messages': list(message(0, 'ELIZA', eliza.get_greeting()))
             }
     }
 
@@ -94,4 +93,7 @@ def handle_message(msg):
 
 
 if __name__ == '__main__':
+
+    if RUNNING_FLASK:
+        app.run(host='0.0.0.0', port=5000)
     socketio.run(app, debug=False)
