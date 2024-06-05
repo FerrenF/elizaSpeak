@@ -4,6 +4,32 @@
     <title>{{ meta.APP_NAME }}</title>
     <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
     <script>
+
+        const MSG_DELAY = 500;
+        const generateMessage = (id, timestamp, source, message) => {
+                return `<div class="message" id="message-${id}">
+                    <span class="timestamp">${timestamp}</span>
+                    <span class="source">${source}</span>:
+                    <span class="text">${message}</span>
+                        </div>`;
+        }
+
+        let messageQueue = Array([])
+        function timerWork(){
+            if(!messageQueue){
+                return;
+            }
+            if(messageQueue.length){
+                let messagesList = document.getElementById('messages');
+                messagesList.innerHTML+=messageQueue.pop()
+                messagesList.scrollTop = messagesList.scrollHeight;
+
+            }
+            else{
+                return;
+            }
+            setTimeout(timerWork,MSG_DELAY)
+        }
         document.addEventListener('DOMContentLoaded', function() {
             let socket = io({{ meta.TRANSPORT_METHOD_CONFIG|safe }});
 
@@ -13,10 +39,13 @@
 
             socket.on('message', function(msg) {
                 var data = JSON.parse(msg);
-                var messages = document.getElementById('messages');
-                var message = document.createElement('div');
-                message.innerHTML = data.response;
-                messages.appendChild(message);
+                if(data.hasOwnProperty('response')) {
+                    for (const mesg in data.response) {
+                        msg = data.response[mesg]
+                        messageQueue.unshift([generateMessage(msg.id, msg.timestamp,msg.source,msg.message)])
+                    }
+                }
+                timerWork()
             });
 
             document.getElementById('sendBtn').onclick = function() {
@@ -32,7 +61,9 @@
 {% block content %}
      <div class="content container mt-5">
         <div class="heading-container text-center">
-            <h2>Welcome to {{ meta.APP_NAME }}! Find my code here: <a href="https://github.com/FerrenF/elizaSpeak">Github</a></h2>
+            <h2>Welcome to {{ meta.APP_NAME }}!</h2>
+            <p>You are speaking to a simulation of ELIZA, a chatbot created by Joseph Weizenbaumm in 1965.
+                <br/>Find my code <a href="https://github.com/FerrenF/elizaSpeak">here</a> and more information about ELIZA <a href="https://sites.google.com/view/elizagen-org/About?authuser=0">here</a></p>
           </div>
         <div id="messages" class="list-group">
             {% for message in data.messages %}
@@ -40,7 +71,7 @@
             {% endfor %}
         </div>
         <div class="input-group mt-3">
-            <form id="userMessageForm" onsubmit="event.preventDefault();">
+            <form id="userMessageForm" onsubmit="return false;">
             <input id="userMessage" type="text" class="form-control" autocomplete="off" placeholder="Type a message...">
             <div class="input-group-append">
                 <button id="sendBtn" class="btn btn-primary">Send</button>

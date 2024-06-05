@@ -13,9 +13,9 @@ load_dotenv('./.env')
 from flask import Flask, render_template, session
 from flask_socketio import SocketIO, send
 
-RUNNING_FLASK = False
-RUNNING_GUNICORN = True
-DEPLOY_HEROKU = True
+RUNNING_FLASK = True
+RUNNING_GUNICORN = False
+DEPLOY_HEROKU = False
 
 p = os.path.abspath(os.getcwd())
 newp = os.path.join(p, "eliza_python_translation")
@@ -52,7 +52,7 @@ eliza.set_tracer(no_trace)
 def message(id, source, message):
    return  {
         'id': id,
-        'timestamp': datetime.datetime.now(),
+        'timestamp': str(datetime.datetime.now()),
         'source': source,
         'message': message
     }
@@ -93,15 +93,13 @@ def handle_message(msg):
     except Exception as e:
         return
     if 'message' in objp:
-
         m = objp['message'] or 'hello'
         elizaResponse = eliza.response(m)
-        preMessages = [
-            messageTemplateHTML(message(random.getrandbits(16), 'USER', m.upper())),
-            messageTemplateHTML(message(random.getrandbits(16), 'ELIZA', elizaResponse))
-        ]
-        preparedResponse = ''.join(preMessages)
-        send(json.dumps({'response': preparedResponse}))
+        preMessages = {'response': [
+            message(random.getrandbits(16), 'USER', m.upper()),
+            message(random.getrandbits(16), 'ELIZA', elizaResponse)
+        ]}
+        send(json.dumps(preMessages))
 
 
 def run_app():
