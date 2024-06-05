@@ -13,9 +13,15 @@ load_dotenv('./.env')
 from flask import Flask, render_template, session
 from flask_socketio import SocketIO, send
 
+
+"""
 RUNNING_FLASK = False
 RUNNING_GUNICORN = True
 DEPLOY_HEROKU = True
+"""
+RUNNING_FLASK = True
+RUNNING_GUNICORN = False
+DEPLOY_HEROKU = False
 
 p = os.path.abspath(os.getcwd())
 newp = os.path.join(p, "eliza_python_translation")

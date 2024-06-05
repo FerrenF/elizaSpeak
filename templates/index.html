@@ -22,7 +22,7 @@
             if(messageQueue.length){
                 let messagesList = document.getElementById('messages');
                 messagesList.innerHTML+=messageQueue.pop()
-                messagesList.scrollTop = messagesList.scrollHeight;
+                window.scrollTo(0, document.body.scrollHeight);
 
             }
             else{
